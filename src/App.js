@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Header from './components/Header';
-import Products from './components/Products';
-import Cart from './components/Cart';
+import Header from './components/appHeader';
+import Products from './components/productList';
+import ShoppingCart from './components/shoppingCart';
 
 import './styles/normalize.css';
 import './styles/font.css';
@@ -14,7 +14,7 @@ function App() {
     <AppStateProvider>
       <Header />
       <Products />
-      <Cart />
+      <ShoppingCart />
     </AppStateProvider>
   );
 }

@@ -5,9 +5,11 @@ const CartWrap = styled.div`
   margin-left: 30px;
   cursor: pointer;
 `;
+
 const CartIcon = styled.img`
   height: 25px;
 `;
+
 const CartLength = styled.p`
   position: absolute;
   top: -23px;

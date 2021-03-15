@@ -7,12 +7,12 @@ import {
   NavGroup,
   Logo,
   NavLink,
-} from './Elements';
+} from './componentElements';
 
-import {Cart} from './HeaderCart'
+import {Cart} from './headerCart'
 
 const Header = () => {
-  const { openCart, shoppingCart } = useAppState();
+  const { displayCart, shoppingCart } = useAppState();
   const cartLength = shoppingCart.length;
 
   return (
@@ -23,7 +23,7 @@ const Header = () => {
       </NavGroup>
       <Group>
         <NavLink>My Account</NavLink>
-        <Cart onClick={openCart} cartLength={cartLength} />
+        <Cart onClick={displayCart} cartLength={cartLength} />
       </Group>
     </HeaderWrapper>
   );

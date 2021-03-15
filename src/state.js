@@ -14,15 +14,10 @@ const AppStateContext = createContext({
   isCartOpen: false,
   products: [],
   subTotal: 0,
-  removeFromCart: () => {},
-  addToCart: () => {},
-  closeCart: () => {},
-  openCart: () => {},
-  currency: 'USD',
-  setCurrency: () => {},
+  currency: 'USD'
 });
 
-const PRODUCTS_QUERY = gql`
+const GET_PRODUCTS = gql`
   query GetProducts($currency: Currency!) {
     products {
       id
@@ -33,25 +28,26 @@ const PRODUCTS_QUERY = gql`
   }
 `;
 
-const findItemIndex = (shoppingCart, id) =>
+const getCartItemIndex = (shoppingCart, id) =>
     shoppingCart.findIndex((shoppingCartItem) => shoppingCartItem.id === id);
 
-const getIndexInfo = (shoppingCart, id) => {
-  const itemIndex = findItemIndex(shoppingCart, id);
-  const existsInCart = itemIndex > -1;
+const getCartItemIndexInfo = (shoppingCart, id) => {
+  const itemIndex = getCartItemIndex(shoppingCart, id);
+  const isInCart = itemIndex > -1;
 
-  return { itemIndex, existsInCart };
+  return { itemIndex, isInCart };
 };
 
-const getNewStore = (shoppingCart, id, updateCount) => {
-  const { existsInCart, itemIndex } = getIndexInfo(shoppingCart, id);
+const getStore = (shoppingCart, id, updateCount) => {
 
-  if (existsInCart) {
+  const { isInCart, itemIndex } = getCartItemIndexInfo(shoppingCart, id);
+
+  if (isInCart) {
     const updatedItem = shoppingCart[itemIndex];
     const newQuantity = updatedItem.quantity + updateCount;
-    const quantityIsPositive = newQuantity > 0;
+    const isPositive = newQuantity > 0;
 
-    if (quantityIsPositive) {
+    if (isPositive) {
       const newCart = [...shoppingCart];
       newCart[itemIndex] = { ...updatedItem, quantity: newQuantity };
       return newCart;
@@ -61,6 +57,7 @@ const getNewStore = (shoppingCart, id, updateCount) => {
   }
 
   return [...shoppingCart, { id, quantity: updateCount }];
+
 };
 
 const shoppingCartReducer = (state, action) => {
@@ -68,13 +65,13 @@ const shoppingCartReducer = (state, action) => {
     case 'ADD_TO_CART':
       return {
         isCartOpen: true,
-        store: getNewStore(state.store, action.payload.id, 1),
+        store: getStore(state.store, action.payload.id, 1),
       };
 
     case 'REMOVE_FROM_CART':
       return {
         ...state,
-        store: getNewStore(
+        store: getStore(
             state.store,
             action.payload.id,
             action.payload.count || -1
@@ -98,51 +95,60 @@ const shoppingCartReducer = (state, action) => {
   }
 };
 
-const flattenProductList = (arr = []) =>
-    arr.reduce((obj, arrItem) => ({ ...obj, [arrItem.id]: arrItem }), {});
+const flattenProductList = (arr = []) => arr.reduce((obj, arrItem) => (
+  { ...obj, [arrItem.id]: arrItem }), {}
+);
 
+  
 export const AppStateProvider = ({ children }) => {
+ 
   const [currency, setCurrency] = useState('USD');
-  const { data = {} } = useQuery(PRODUCTS_QUERY, { variables: { currency } });
+
+  const { data = {} } = useQuery(GET_PRODUCTS, { variables: { currency } });
+  
   const { products = [] } = data;
+  
   const [shoppingCartState, dispatch] = useReducer(shoppingCartReducer, {
     store: [],
     isCartOpen: false,
   });
+
   const normalizedProducts = useMemo(() => flattenProductList(products), [
     products,
   ]);
-  const shoppingCart = useMemo(
-      () =>
-          shoppingCartState.store.map((item) => ({
-            ...item,
-            ...normalizedProducts[item.id],
-          })),
-      [shoppingCartState, normalizedProducts]
+  
+  const shoppingCart = useMemo( () =>
+    shoppingCartState.store.map((item) => ({
+      ...item,
+      ...normalizedProducts[item.id],
+    })),
+    [shoppingCartState, normalizedProducts]
   );
+  
   const subTotal = useMemo(
       () => shoppingCart.reduce((total, item) => total + item.quantity * item.price, 0),
       [shoppingCart]
   );
 
-  const addToCart = useCallback(
+  const addItemToCart = useCallback(
       (id) => dispatch({ type: 'ADD_TO_CART', payload: { id } }),
       [dispatch]
   );
 
-  const removeFromCart = useCallback(
+  const removeItemFromCart = useCallback(
       (id, count = -1) =>
           dispatch({ type: 'REMOVE_FROM_CART', payload: { id, count } }),
       [dispatch]
   );
 
-  const closeCart = useCallback(() => dispatch({ type: 'CLOSE_CART' }), [
+  const hideCart = useCallback(() => dispatch({ type: 'CLOSE_CART' }), [
     dispatch,
   ]);
 
-  const openCart = useCallback(() => dispatch({ type: 'OPEN_CART' }), [
+  const displayCart = useCallback(() => dispatch({ type: 'OPEN_CART' }), [
     dispatch,
   ]);
+
   return (
       <AppStateContext.Provider
           value={{
@@ -150,10 +156,10 @@ export const AppStateProvider = ({ children }) => {
             isCartOpen: shoppingCartState.isCartOpen,
             products,
             subTotal,
-            removeFromCart,
-            addToCart,
-            closeCart,
-            openCart,
+            removeItemFromCart,
+            addItemToCart,
+            hideCart,
+            displayCart,
             currency,
             setCurrency,
           }}

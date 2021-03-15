@@ -10,23 +10,23 @@ import {
   CartItemBottomRow,
   PriceWrap,
   Price,
-} from './Elements';
+} from './componentElements';
 
 const CartItem = ({ quantity, title, img, price, id }) => {
-  const { addToCart, removeFromCart, currencySymbol } = useAppState();
+  const { addItemToCart, removeItemFromCart, currencySymbol } = useAppState();
 
   return (
     <CartItemWrap>
       <CartItemTitle>{title}</CartItemTitle>
-      <CartItemCancel onClick={() => removeFromCart(id, -quantity)}>
+      <CartItemCancel onClick={() => removeItemFromCart(id, -quantity)}>
         x
       </CartItemCancel>
       <CartItemImg src={img} />
       <CartItemBottomRow>
         <QuantityManager
           quantity={quantity}
-          onIncrease={() => addToCart(id)}
-          onDecrease={() => removeFromCart(id)}
+          onIncrease={() => addItemToCart(id)}
+          onDecrease={() => removeItemFromCart(id)}
         />
         <PriceWrap>
           <Price>

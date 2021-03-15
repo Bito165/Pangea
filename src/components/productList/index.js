@@ -1,41 +1,37 @@
 import React, { Fragment } from 'react';
 import useAppState from '../../state';
-import { Container } from './../Layout';
+
 import {
   Header,
   Title,
   ProductGallery,
   GalleryItem, ProductGalleryWrap,
-} from './Elements';
-import ProductItem from './ProductItem';
+} from './componentElements';
+import Items from './items';
 
 const Products = () => {
-  const { addToCart, products, currencySymbol } = useAppState();
+  const { addItemToCart, products, currencySymbol } = useAppState();
 
   return (
     <Fragment>
-      <Container>
         <Header>
           <Title>All Products</Title>
         </Header>
-      </Container>
 
       <ProductGalleryWrap>
-        <Container>
           <ProductGallery>
             {products.map((product) => (
               <GalleryItem key={product.id} className={'productItem'}>
-                <ProductItem
+                <Items
                   id={product.id}
                   name={product.title}
                   price={`${currencySymbol}${product.price}`}
                   img={product.image_url}
-                  onAddToCart={addToCart}
+                  onaddItemToCart={addItemToCart}
                 />
               </GalleryItem>
             ))}
           </ProductGallery>
-        </Container>
       </ProductGalleryWrap>
     </Fragment>
   );

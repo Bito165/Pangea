@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import LogoIcon from '../../assets/images/lumin-logo.png';
-import { Container } from '../Layout';
 
-export const HeaderWrapper = styled(Container)`
+
+export const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

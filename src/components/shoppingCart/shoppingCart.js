@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import useAppState from '../../state';
 
-import CartItem from './CartItem';
+import CartItem from './cartItem';
 import {
   Wrapper,
   Overlay,
@@ -16,7 +16,7 @@ import {
   SubTotalLabel,
   SubTotalPrice,
   CheckoutButton, CardFooter, EmptyCartText,
-} from './Elements';
+} from './componentElements';
 
 const CURRENCY_QUERY = gql`
   {
@@ -24,13 +24,13 @@ const CURRENCY_QUERY = gql`
   }
 `;
 
-const Cart = () => {
+const ShoppingCart = () => {
   const { data = {} } = useQuery(CURRENCY_QUERY);
   const currencies = data.currency || [];
   const {
     isCartOpen,
     shoppingCart,
-    closeCart,
+    hideCart,
     subTotal,
     currencySymbol,
     currentCurrency,
@@ -48,11 +48,11 @@ const Cart = () => {
 
   return (
     <Wrapper>
-      <Overlay onClick={closeCart} />
+      <Overlay onClick={hideCart} />
       <Content>
         <Header style={{padding: '1.5rem'}}>
           <Title>My cart <hr /> </Title>
-          <Back onClick={closeCart} />
+          <Back onClick={hideCart} />
         </Header>
         <div>
           <span style={{textAlign: 'left', padding: '1.5rem'}}>
@@ -97,4 +97,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default ShoppingCart;

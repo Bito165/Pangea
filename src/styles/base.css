@@ -29,3 +29,7 @@ body::-webkit-scrollbar-thumb:hover {
   transform: scale(1.04); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   transition: 1s;
 }
+
+.productWrap{
+  height: '10rem'; display: 'flex'; justifyContent: 'flex-end'
+}
