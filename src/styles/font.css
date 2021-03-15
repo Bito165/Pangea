@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'TT Norms Pro Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('TT Norms Pro Regular'), url('../assets/fonts/TT Norms Pro Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Bau';
+  src: url('../assets/fonts/bau-regular.ttf') format('truetype'); /* Safari, Android, iOS */
+}
